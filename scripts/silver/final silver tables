@@ -1,0 +1,59 @@
+/* we have finished the bronze level
+now we are in silver level, 
+what we will do here?
+1. create silver level tables without inserting any data
+in them, exactly like created bronze level tables
+just replace the 'bronze.' to 'silver.' and run the queries
+2. understand and explore what is present in the tables of 
+bronze level
+3.identify the keys with which we can connect or join
+different existing tables
+4. perform required checks , operations so proper data
+or correct data is obtained from the raw bronze level
+tables
+5. then insert the correct data into the silver level tables
+*/
+
+use datawarehouse
+
+/* first silver table */
+
+insert into silver.crm_cust_info(
+       [cst_id]
+      ,[cst_key]
+      ,[cst_firstname]
+      ,[cst_lastname]
+      ,[cst_marital_status]
+      ,[cst_gndr]
+      ,[cst_create_date]
+)
+select
+	   cst_id
+      ,cst_key
+      ,trim(cst_firstname) as cst_first_name
+      ,trim(cst_lastname) as cst_lastname
+      ,case upper(trim(cst_marital_status))
+            when 's' then 'Single'
+            when 'M' then 'Married'
+            else 'n/a'
+       end as cst_marital_status
+      ,case upper(trim(cst_gndr))
+            when 'M' then 'Male'
+            when 'F' then 'Female'
+            else 'n/a'
+       end as cst_gndr
+      ,cst_create_date
+from(
+select 
+	*,
+	ROW_NUMBER() over(partition by cst_id order by cst_create_date desc) as flag_
+from bronze.crm_cust_info
+where cst_id is not null
+) t
+where flag_ = 1
+
+-- check the first silver table
+
+select *
+from silver.crm_cust_info
+
