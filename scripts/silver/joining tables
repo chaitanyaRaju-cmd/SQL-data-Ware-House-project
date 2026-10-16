@@ -1,1 +1,81 @@
+SELECT TOP (1000) [cst_id]
+      ,[cst_key]
+      ,[cst_firstname]
+      ,[cst_lastname]
+      ,[cst_marital_status]
+      ,[cst_gndr]
+      ,[cst_create_date]
+  FROM [datawarehouse].[bronze].[crm_cust_info]
+
+  /* here we have cst_id and cst_key columns displaying
+  id number of customer and key number of customer */
+
+  SELECT TOP (1000) [prd_id]
+      ,[prd_key]
+      ,[prd_nm]
+      ,[prd_cost]
+      ,[prd_line]
+      ,[prd_start_dt]
+      ,[prd_end_dt]
+  FROM [datawarehouse].[bronze].[crm_prd_info]
+
+/* here we have prd_id column and prd_key column displaying
+product id number and product key number */
+
+SELECT TOP (1000) [sls_ord_num]
+      ,[sls_prd_key]
+      ,[sls_cust_id]
+      ,[sls_order_dt]
+      ,[sls_ship_dt]
+      ,[sls_due_dt]
+      ,[sls_sales]
+      ,[sls_quantity]
+      ,[sls_price]
+  FROM [datawarehouse].[bronze].[crm_sales_details]
+
+  /* here we have sls_ord_num column which have 
+  sales order number , sls_prd_key column which have
+  sales product key values , sls_cust_id column which have
+  sales customer id number */
+
+  SELECT TOP (1000) [CID]
+      ,[BDATE]
+      ,[GEN]
+  FROM [datawarehouse].[bronze].[erp_CUST_AZ12]
+
+/* here we have CID column , BDATE column and GEN column */
+
+SELECT TOP (1000) [CID]
+      ,[CNTRY]
+  FROM [datawarehouse].[bronze].[erp_LOC_A101]
+
+  /* here we have CID and CNTRY columns */
+
+SELECT TOP (1000) [ID]
+      ,[CAT]
+      ,[SUBCAT]
+      ,[MAINTENANCE]
+  FROM [datawarehouse].[bronze].[erp_PX_CAT_G1V2]
+
+/* here we have ID , CAT column (category) , SUBCAT (subcategory)
+and MAINTENANCE column */
+
+-- we did this to understand how these tables can be joined 
+--with one another.
+
+/* we can join crm_sales_details table with crm_prd_info table
+on prd_key column in both the tables
+
+we can join crm_sales_details table with crm_cust_info table
+on cst_id column in both the tables
+
+we can join crm_prd_info table with erp_px_cat_gtv2 table
+on prd_key column and ID column in both tables
+
+we can connect crm_cust_info table with erp_cust_az12 table
+on cst_key column and CID column in both tables
+
+we can connect crm_cust_info table with erp_loc_a101 table
+on cst_key column and CID column in both tables. */
+
 
