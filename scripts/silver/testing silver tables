@@ -1,0 +1,35 @@
+/* testing silver table */
+
+/* now we are checking each table from the bronze layer
+where any required changes has to be done to make the data 
+correct and accurate */
+
+-- first table
+
+select *
+from silver.crm_cust_info
+
+/* check for nulls or duplicates inside the primary key
+which is cst_id column */
+
+select 
+	cst_id,
+	count(*)
+from silver.crm_cust_info
+group by cst_id
+having count(*) > 1 or cst_id is null
+
+/* check the string value columns for unwanted
+spaces */
+
+select 
+	cst_firstname  -- cst_lastname or any string valued column, make changes accordingly
+from silver.crm_cust_info
+where cst_firstname != trim(cst_firstname)
+
+/* check data consistency and standardization */
+
+select distinct
+	cst_gndr      -- cst_marital_status
+from silver.crm_cust_info
+
