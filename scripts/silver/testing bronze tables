@@ -144,3 +144,59 @@ order by sls_sales, sls_quantity , sls_price
 
 --we have created the solution here itself, the case statements are
 --the solutions if you remove them that is the actual check
+
+/* testing fourth table */
+
+select *
+from bronze.erp_CUST_AZ12
+
+-- here the CID has 'NAS' as extra when compared with 
+-- crm_cust_info table
+
+--we can remove the 'NAS'
+
+/* now check for invalid dates */
+
+select
+	bdate
+from bronze.erp_CUST_AZ12
+--where bdate != cast(bdate as date)   
+where bdate < '1924-01-01' or bdate > getdate()
+
+/* check for standardization */
+
+select distinct 
+	GEN
+from bronze.erp_CUST_AZ12
+
+
+/* testing fifth table */
+
+select *
+from bronze.erp_LOC_A101
+
+-- check for any mistakes and remove them while comparing with cust_info
+--table
+
+--check  country column
+
+select
+	CNTRY
+from bronze.erp_LOC_A101
+where CNTRY is null
+
+-- or 
+select distinct 
+	cntry
+from bronze.erp_LOC_A101
+order by CNTRY
+
+/* testing sixth table */
+
+-- check for unwanted spaces in string valued columns
+
+select distinct
+	--CAT,
+	--SUBCAT
+	MAINTENANCE
+from bronze.erp_PX_CAT_G1V2
