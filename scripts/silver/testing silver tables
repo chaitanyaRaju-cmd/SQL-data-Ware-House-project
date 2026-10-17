@@ -136,3 +136,67 @@ or sls_quantity <= 0
 or sls_price is null 
 or sls_price <= 0
 order by sls_sales, sls_quantity , sls_price
+
+/* fourth table */
+
+/* testing fourth table */
+
+select *
+from silver.erp_CUST_AZ12
+
+-- here the CID has 'NAS' as extra when compared with 
+-- crm_cust_info table
+
+--we can remove the 'NAS'
+
+/* now check for invalid dates */
+
+select
+	bdate
+from silver.erp_CUST_AZ12
+--where bdate != cast(bdate as date)   
+where bdate < '1924-01-01' or bdate > getdate()
+
+/* check for standardization */
+
+select distinct 
+	GEN
+from silver.erp_CUST_AZ12
+
+/* testing fifth table */
+
+select *
+from silver.erp_LOC_A101
+
+-- check for any mistakes and remove them while comparing with cust_info
+--table
+
+--check  country column
+
+select
+	CNTRY
+from silver.erp_LOC_A101
+where CNTRY is null
+
+-- or 
+select distinct 
+	cntry
+from silver.erp_LOC_A101
+order by CNTRY
+
+
+/* testing sixth table */
+
+
+-- check for unwanted spaces in string valued columns
+
+select distinct
+	--CAT,
+	--SUBCAT
+	MAINTENANCE
+from silver.erp_PX_CAT_G1V2
+
+-- check the table
+
+select *
+from silver.erp_PX_CAT_G1V2
