@@ -139,3 +139,57 @@ from bronze.crm_sales_details
 
 select *
 from silver.crm_sales_details
+
+-- fourth silver table
+
+insert into silver.erp_CUST_AZ12(
+       [CID]
+      ,[BDATE]
+      ,[GEN]
+)
+select
+    case 
+        when CID like 'NAS%' then SUBSTRING(CID,4,len(CID))
+        else CID
+    end as  CID,
+    case 
+        when BDATE > getdate() then null
+        else BDATE
+    end as BDATE,
+    case 
+        when upper(trim(gen)) in ('F' , 'FEMALE') then 'Female'
+        when upper(trim(gen)) in ('M' , 'MALE') then 'Male'
+        else 'n/a'
+    end as gen
+from bronze.erp_CUST_AZ12
+
+/* fifth silver table */
+
+insert into silver.erp_LOC_A101(
+    CID,
+    CNTRY
+)
+select 
+    replace(CID,'-','') as CID,
+    case 
+        when trim(CNTRY) is null or trim(CNTRY) = '' then 'n/a'
+        when trim(CNTRY) = 'de' then 'Denmark'
+        when trim(CNTRY) in ('us','usa') then 'United States'
+        else trim(CNTRY)
+    end as CNTRY
+from bronze.erp_LOC_A101
+
+/* sixth silver table */
+
+insert into silver.erp_PX_CAT_G1V2(
+    ID,
+    CAT,
+    SUBCAT,
+    MAINTENANCE
+)
+select 
+    ID,
+    trim(CAT) as CAT,
+    trim(SUBCAT) as SUBCAT,
+    trim(MAINTENANCE) as MAINTENANCE
+from bronze.erp_PX_CAT_G1V2
