@@ -1,5 +1,7 @@
 /* testing silver table */
 
+use datawarehouse
+
 /* now we are checking each table from the bronze layer
 where any required changes has to be done to make the data 
 correct and accurate */
@@ -82,3 +84,55 @@ select
 	*
 from silver.crm_prd_info
 where prd_end_dt < prd_start_dt
+
+/* third table */
+
+select *
+from silver.crm_sales_details
+
+--check for unwanted spaces in string valued columns
+
+select
+	sls_ord_num
+from silver.crm_sales_details
+where sls_ord_num != trim(sls_ord_num)
+
+-- check if sls_prd_key column can be used to join other tables
+-- similarly check for sls_cust_id
+
+/* check for invalid dates */
+-- we should think of different ways how the dates could be 
+--have a bad quality
+
+select
+	nullif(sls_order_dt,0) as sls_order_dt
+from silver.crm_sales_details
+where sls_order_dt <= 0 or len(sls_order_dt) != 8
+
+-- working well--
+
+-- check for sls_ship_dt and sls_due_dt as well
+-- check if order date is greater than ship date or 
+-- order date is greater than due date
+
+select *
+from silver.crm_sales_details
+where sls_order_dt > sls_ship_dt or sls_order_dt > sls_due_dt
+
+/* for checking sls_sales , sls_quantity , sls_price there is
+a business rule sales = quantity * price and sales should not be
+negitive or null or zero */
+
+select distinct
+	sls_sales,
+	sls_quantity,
+	sls_price
+from silver.crm_sales_details
+where sls_sales != sls_quantity * sls_price 
+or sls_sales is null
+or sls_sales <= 0
+or sls_quantity is null
+or sls_quantity <= 0
+or sls_price is null 
+or sls_price <= 0
+order by sls_sales, sls_quantity , sls_price
